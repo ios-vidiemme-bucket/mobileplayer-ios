@@ -57,6 +57,10 @@ final class MobilePlayerControlsView: UIView {
   }
 
   override func layoutSubviews() {
+    
+    let iPhoneX = UIDevice().userInterfaceIdiom == .phone && UIScreen.main.nativeBounds.height == 2436
+    let landscape = UIScreen.main.bounds.height != 812
+    
     let size = bounds.size
     previewImageView.frame = bounds
     activityIndicatorView.sizeToFit()
@@ -65,16 +69,16 @@ final class MobilePlayerControlsView: UIView {
       y: (size.height - activityIndicatorView.frame.size.height) / 2)
     topBar.sizeToFit()
     topBar.frame = CGRect(
-      x: 0,
-      y: controlsHidden ? -topBar.frame.size.height : 0,
-      width: size.width,
+      x: (iPhoneX && landscape) ? 44 : 0,
+      y: controlsHidden ? -topBar.frame.size.height : ((iPhoneX && !landscape) ? 44 : 0),
+      width: size.width - ((iPhoneX && landscape) ? 88 : 0),
       height: topBar.frame.size.height)
     topBar.alpha = controlsHidden ? 0 : 1
     bottomBar.sizeToFit()
     bottomBar.frame = CGRect(
-      x: 0,
-      y: size.height - (controlsHidden ? 0 : bottomBar.frame.size.height),
-      width: size.width,
+      x: (iPhoneX && landscape) ? 44 : 0,
+      y: size.height - (controlsHidden ? 0 : bottomBar.frame.size.height + ((iPhoneX && !landscape) ? 34 : 0)),
+      width: size.width - ((iPhoneX && landscape) ? 88 : 0),
       height: bottomBar.frame.size.height)
     bottomBar.alpha = controlsHidden ? 0 : 1
     overlayContainerView.frame = CGRect(
