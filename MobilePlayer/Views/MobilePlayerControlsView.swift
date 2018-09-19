@@ -58,8 +58,11 @@ final class MobilePlayerControlsView: UIView {
 
   override func layoutSubviews() {
     
-    let iPhoneX = UIDevice().userInterfaceIdiom == .phone && UIScreen.main.nativeBounds.height == 2436
-    let landscape = UIScreen.main.bounds.height != 812
+    var hasTopNotch = false
+    if #available(iOS 11.0, tvOS 11.0, *) {
+        hasTopNotch = UIApplication.shared.delegate?.window??.safeAreaInsets.top ?? 0 > 20
+    }
+    let landscape = UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight
     
     let size = bounds.size
     previewImageView.frame = bounds
@@ -69,16 +72,16 @@ final class MobilePlayerControlsView: UIView {
       y: (size.height - activityIndicatorView.frame.size.height) / 2)
     topBar.sizeToFit()
     topBar.frame = CGRect(
-      x: (iPhoneX && landscape) ? 44 : 0,
-      y: controlsHidden ? -topBar.frame.size.height : ((iPhoneX && !landscape) ? 44 : 0),
-      width: size.width - ((iPhoneX && landscape) ? 88 : 0),
+      x: (hasTopNotch && landscape) ? 44 : 0,
+      y: controlsHidden ? -topBar.frame.size.height : ((hasTopNotch && !landscape) ? 44 : 0),
+      width: size.width - ((hasTopNotch && landscape) ? 88 : 0),
       height: topBar.frame.size.height)
     topBar.alpha = controlsHidden ? 0 : 1
     bottomBar.sizeToFit()
     bottomBar.frame = CGRect(
-      x: (iPhoneX && landscape) ? 44 : 0,
-      y: size.height - (controlsHidden ? 0 : bottomBar.frame.size.height + ((iPhoneX && !landscape) ? 34 : 0)),
-      width: size.width - ((iPhoneX && landscape) ? 88 : 0),
+      x: (hasTopNotch && landscape) ? 44 : 0,
+      y: size.height - (controlsHidden ? 0 : bottomBar.frame.size.height + ((hasTopNotch && !landscape) ? 34 : 0)),
+      width: size.width - ((hasTopNotch && landscape) ? 88 : 0),
       height: bottomBar.frame.size.height)
     bottomBar.alpha = controlsHidden ? 0 : 1
     overlayContainerView.frame = CGRect(
